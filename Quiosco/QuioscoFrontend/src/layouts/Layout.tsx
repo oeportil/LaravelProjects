@@ -4,10 +4,12 @@ import Sidebar from "../components/Sidebar";
 import Resumen from "../components/Resumen";
 import ModalProducto from "../components/ModalProducto";
 import { ToastContainer } from "react-toastify";
-
+import { useAuth } from "../hooks/useAuth";
 Modal.setAppElement("#root");
 
 const Layout = () => {
+  const { user, error } = useAuth({ middleware: "auth" });
+  console.log(user);
   return (
     <>
       <div className="md:flex">

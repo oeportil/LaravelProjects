@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
-import clienteAxios from "../config/axios";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import Alerta from "../components/Alerta";
-
+import { useAuth } from "../hooks/useAuth";
 const Register = () => {
   const [errores, setErrores] = useState<string[]>([]);
+  const { register } = useAuth({ middleware: "guest", url: "/" });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const password_confirmation = formData.get("password_confirmation");
+    const name = formData.get("name") ?? "";
+    const email = formData.get("email") ?? "";
+    const password = formData.get("password") ?? "";
+    const password_confirmation = formData.get("password_confirmation") ?? "";
     const datos = {
       name,
       email,
@@ -21,14 +20,7 @@ const Register = () => {
       password_confirmation,
     };
     console.log(datos);
-    try {
-      const respuesta = await clienteAxios.post("register", datos);
-      console.log(respuesta);
-    } catch (error: unknown) {
-      const err = error as AxiosError<{ errors: { [key: string]: string } }>;
-      console.error(err);
-      setErrores(Object.values(err.response?.data?.errors ?? {}));
-    }
+    register(datos, setErrores);
   };
 
   return (

@@ -23,6 +23,9 @@ export type ContexType = {
   handleEditarCantidad: (id: number) => void;
   handleEliminarProducto: (id: number) => void;
   total: number;
+  handleSubmitNuevaOrden: (logout: () => void) => void;
+  handleClickCompletarPedido: (id: number) => void;
+  handleClickProductoAgotado: (id: number) => void;
 };
 
 export const QuioscoProvider = ({ children }: IContext) => {
@@ -53,7 +56,11 @@ export const QuioscoProvider = ({ children }: IContext) => {
 
   const ObtenerCategorias = async () => {
     try {
-      const { data } = await clienteAxios.get("categorias");
+      const { data } = await clienteAxios.get("categorias", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+        },
+      });
       setCategorias(data.data);
       setCategoriaActual(data.data[0]);
     } catch (error) {
@@ -104,6 +111,63 @@ export const QuioscoProvider = ({ children }: IContext) => {
     toast.error(`Eliminaste ${producto.nombre} del pedido`);
   };
 
+  const handleSubmitNuevaOrden = async (logout: () => void) => {
+    try {
+      const { data } = await clienteAxios.post(
+        "pedidos",
+        {
+          total,
+          productos: pedido.map((producto) => {
+            return {
+              id: producto.id,
+              cantidad: producto.cantidad,
+            };
+          }),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+          },
+        }
+      );
+      toast.success(data.message);
+      setTimeout(() => {
+        setPedido([]);
+      }, 1000);
+
+      setTimeout(() => {
+        localStorage.removeItem("AUTH_TOKEN");
+        logout();
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickCompletarPedido = async (id: number) => {
+    try {
+      const { data } = await clienteAxios.put(`productos/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickProductoAgotado = async (id: number) => {
+    try {
+      const { data } = await clienteAxios.put(`pedidos/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <QuioscoContext.Provider
       value={{
@@ -119,6 +183,9 @@ export const QuioscoProvider = ({ children }: IContext) => {
         handleEditarCantidad,
         handleEliminarProducto,
         total,
+        handleSubmitNuevaOrden,
+        handleClickCompletarPedido,
+        handleClickProductoAgotado,
       }}
     >
       {children}

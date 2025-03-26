@@ -8,8 +8,13 @@ const Inicio = () => {
   const { categoriaActual } = useQuiosco() as ContexType;
 
   //Consulta SWR
-  const fetcher = () => clienteAxios("productos").then((data) => data.data);
-  const { data, error, isLoading } = useSWR("productos", fetcher, {
+  const fetcher = () =>
+    clienteAxios("productos", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("AUTH_TOKEN")}`,
+      },
+    }).then((data) => data.data);
+  const { data, isLoading } = useSWR("productos", fetcher, {
     refreshInterval: 1000,
   });
 

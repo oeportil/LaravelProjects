@@ -1,11 +1,19 @@
 import { ContexType } from "../context/QuioscoProvider";
 import { formatearDinero } from "../helpers";
+import { useAuth } from "../hooks/useAuth";
 import useQuiosco from "../hooks/userQuiosco";
 import ResumenPedido from "./ResumenPedido";
 const Resumen = () => {
-  const { pedido, total } = useQuiosco() as ContexType;
-
+  const { pedido, total, handleSubmitNuevaOrden } = useQuiosco() as ContexType;
+  const { logout } = useAuth({});
   const comprobarPedido = () => pedido.length === 0;
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    handleSubmitNuevaOrden(logout);
+  };
+
   return (
     <aside className="h-screen p-5 overflow-y-scroll w-72">
       <h1 className="text-4xl font-black"> </h1>
@@ -24,7 +32,7 @@ const Resumen = () => {
       </div>
       <p className="mt-10 text-xl">Total: {formatearDinero(total)}</p>
 
-      <form action="" className="w-full">
+      <form action="" className="w-full" onSubmit={handleSubmit}>
         <div className="mt-5">
           <input
             type="submit"
