@@ -24,7 +24,7 @@ const Inicio = () => {
   );
   return (
     <>
-      <h1 className="text-4xl font-black">{categoriaActual.nombre}</h1>
+      <h1 className="text-4xl font-black">{categoriaActual?.nombre}</h1>
 
       <p className="my-10 text-2xl">
         Elige y personaliza tu pedido a continuación
