@@ -10,11 +10,14 @@ const AdminSidebar = () => {
         <img src="/img/logo.svg" alt="Imagen Logotip" className="w-40" />
       </div>
       <nav className="flex flex-col p-4">
-        <Link to={"/admin"} className="text-lg font-bold">
+        <Link to={"/admin"} className="text-lg font-bold my-3">
           Ordenes
         </Link>
-        <Link to={"/admin/productos"} className="text-lg font-bold">
+        <Link to={"/admin/productos"} className="text-lg font-bold my-3">
           Productos
+        </Link>
+        <Link to={"/admin/reportes"} className="text-lg font-bold my-3">
+          Reportes
         </Link>
       </nav>
       <div className="px-5 my-5">

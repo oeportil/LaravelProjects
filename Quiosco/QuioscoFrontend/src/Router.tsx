@@ -7,6 +7,8 @@ import Register from "./views/Register";
 import AdminLayout from "./layouts/AdminLayout";
 import Ordenes from "./views/Ordenes";
 import Productos from "./views/Productos";
+import HistorialPedidos from "./views/HistorialPedidos"; 
+import Reportes from "./views/Reportes";
 
 const Router = () => {
   return (
@@ -14,6 +16,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Inicio />} />
+          <Route path="historial-pedidos" element={<HistorialPedidos />} /> 
         </Route>
         <Route path="auth" element={<AuthLayout />}>
           <Route index element={<Login />} />
@@ -22,6 +25,7 @@ const Router = () => {
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<Ordenes />} />
           <Route path="productos" element={<Productos />} />
+          <Route path="reportes" element={<Reportes />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -33,7 +33,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -45,5 +48,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function is_admin()
+    {
+        return $this->admin;
     }
 }

@@ -26,6 +26,8 @@ export type ContexType = {
   handleSubmitNuevaOrden: (logout: () => void) => void;
   handleClickCompletarPedido: (id: number) => void;
   handleClickProductoAgotado: (id: number) => void;
+  urlImagenProducto: (producto: IProducto) => string;
+  urlIconoCategoria: (categoria: ICategoria) => string;
 };
 
 export const QuioscoProvider = ({ children }: IContext) => {
@@ -47,10 +49,14 @@ export const QuioscoProvider = ({ children }: IContext) => {
   const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
-    const nuevoTotal = pedido.reduce(
-      (total, producto) => producto.precio * producto.cantidad! + total,
-      0
-    );
+    const nuevoTotal = pedido.reduce((total, producto) => {
+      const tieneDescuento = producto.descuento_activo;
+      const precioFinal = tieneDescuento
+        ? producto.precio * (1 - tieneDescuento.porcentaje / 100)
+        : producto.precio;
+  
+      return precioFinal * (producto.cantidad ?? 1) + total;
+    }, 0);
     setTotal(nuevoTotal);
   }, [pedido]);
 
@@ -136,7 +142,6 @@ export const QuioscoProvider = ({ children }: IContext) => {
       }, 1000);
 
       setTimeout(() => {
-        localStorage.removeItem("AUTH_TOKEN");
         logout();
       }, 3000);
     } catch (error) {
@@ -168,6 +173,12 @@ export const QuioscoProvider = ({ children }: IContext) => {
     }
   };
 
+  const urlImagenProducto = (producto: IProducto) =>
+    `${import.meta.env.VITE_API_URL}/productos/${producto.id}/imagen`;
+  
+  const urlIconoCategoria = (categoria: ICategoria) =>
+    `${import.meta.env.VITE_API_URL}/categorias/${categoria.id}/icono`;
+
   return (
     <QuioscoContext.Provider
       value={{
@@ -186,6 +197,8 @@ export const QuioscoProvider = ({ children }: IContext) => {
         handleSubmitNuevaOrden,
         handleClickCompletarPedido,
         handleClickProductoAgotado,
+        urlImagenProducto,
+        urlIconoCategoria,
       }}
     >
       {children}
