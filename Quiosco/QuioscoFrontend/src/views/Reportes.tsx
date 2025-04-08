@@ -115,12 +115,13 @@ const Reportes = () => {
           />
         </div>
       )}
-
+    
       {activeTab === "Horarios Populares" && (
-        <div className="mb-8">
+        
+        <div className="mb-8">'
           <Bar
             data={{
-              labels: horariosPopulares.map((hora) => `${hora.hora}:00`),
+              labels: horariosPopulares.map((hora) => `${(parseInt(hora.hora)+6)%24}:00`),
               datasets: [
                 {
                   label: "Pedidos",

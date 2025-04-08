@@ -6,7 +6,14 @@ import useQuiosco from "../hooks/userQuiosco";
 const ResumenPedido = (producto: IProducto) => {
   const { handleEditarCantidad, handleEliminarProducto } =
     useQuiosco() as ContexType;
-  const { id, nombre, precio, cantidad } = producto;
+  const { id, nombre, precio, cantidad, descuento_activo } = producto;
+
+  // Calcular el precio final con descuento
+  const descuento = descuento_activo
+    ? precio * (descuento_activo.porcentaje / 100)
+    : 0;
+  const precioFinal = precio - descuento;
+
   return (
     <div className="p-4 space-y-1 bg-white shadow">
       <div className="space-y-2">
@@ -15,8 +22,13 @@ const ResumenPedido = (producto: IProducto) => {
         <p className="text-lg font-bold text-amber-500">
           Precio: {formatearDinero(precio)}
         </p>
+        {descuento > 0 && (
+          <p className="text-sm text-green-600">
+            Descuento aplicado: {formatearDinero(descuento)}
+          </p>
+        )}
         <p className="text-lg text-gray-700">
-          Subtotal: {formatearDinero(precio * cantidad!)}
+          Subtotal: {formatearDinero(precioFinal * cantidad!)}
         </p>
       </div>
 

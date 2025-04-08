@@ -103,7 +103,7 @@ class PedidoController extends Controller
     }
     public function historialCliente($id)
     {
-        return Pedido::with('productos')->where('user_id', $id)->get();
+        return Pedido::with('productos')->where('user_id', $id)->orderBy('id', 'DESC')->get();
     }
     public function topProductos(Request $request)
     {

@@ -5,11 +5,17 @@ import { useAuth } from "../hooks/useAuth";
 import useQuiosco from "../hooks/userQuiosco";
 
 const Producto = (producto: IProducto) => {
-  const { handleClickModal, handleSetProducto, handleClickProductoAgotado, urlImagenProducto} =
+  const { handleClickModal, handleSetProducto, handleClickProductoAgotado, urlImagenProducto } =
     useQuiosco() as ContexType;
-  const { nombre, precio } = producto;
+  const { nombre, precio, descuento_activo } = producto;
   const { isAdmin } = useAuth({});
   const admin = isAdmin();
+
+  // Calcular el precio con descuento
+  const descuento = descuento_activo
+    ? precio * (descuento_activo.porcentaje / 100)
+    : 0;
+  const precioConDescuento = precio - descuento;
 
   return (
     <div className="p-3 bg-white border border-gray-300 shadow">
@@ -26,10 +32,15 @@ const Producto = (producto: IProducto) => {
         <p className="mt-5 text-4xl font-black text-amber-500">
           {formatearDinero(precio)}
         </p>
-        {producto.descuento_activo && (
-          <p className="mt-2 text-lg font-semibold text-green-600">
-            Descuento: {producto.descuento_activo.porcentaje}%
-          </p>
+        {descuento_activo && (
+          <>
+            <p className="mt-2 text-lg font-semibold text-green-600">
+              Descuento: {descuento_activo.porcentaje}%
+            </p>
+            <p className="mt-2 text-2xl font-bold text-green-500">
+              Oferta: {formatearDinero(precioConDescuento)}
+            </p>
+          </>
         )}
         {!admin ? (
           <button
